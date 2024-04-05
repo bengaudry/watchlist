@@ -45,12 +45,16 @@ export function WatchlistScreen() {
     <ScreenContainer>
       <H1>Watchlists</H1>
       <View>
-        {watchlists && watchlists.length > 0 ? watchlists.map((list) => (
-          <View>
-            <Text>{list.name}</Text>
-            <Text>{list.content.join(", ")}</Text>
-          </View>
-        )) : <Text>No movies saved or watchlists created yet</Text>}
+        {watchlists && watchlists.length > 0 ? (
+          watchlists.map((list, idx) => (
+            <View key={idx}>
+              <Text>{list.name}</Text>
+              <Text>{list.content.join(", ")}</Text>
+            </View>
+          ))
+        ) : (
+          <Text>No movies saved or watchlists created yet</Text>
+        )}
         {/* {movieDetails && watchlist && watchlist.length > 0 ? (
           watchlist.map((movieId, idx) => (
             <CompactMovieDetails

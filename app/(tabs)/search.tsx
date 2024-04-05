@@ -9,23 +9,27 @@ import {
 } from "@/components/custom/CompactMovieDetails";
 import Colors from "@/constants/Colors";
 import { useEffect, useState } from "react";
-import { TextInput } from "react-native";
+import { StyleSheet, TextInput } from "react-native";
 
 export default function TabTwoScreen() {
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] =
     useState<CompactMovieDetailsProps[]>();
+  const [isLoadingResults, setIsLoadingResults] = useState(false);
 
   const fetchQuery = () => {
     if (query.length > 2) {
+      setIsLoadingResults(true);
       searchMovie(query)
         .then((movies) => {
           console.log("search results : ", movies);
           setSearchResults(movies);
+          setIsLoadingResults(false);
         })
-        .catch((err) =>
-          console.error(`Error while fetching search results : `, err)
-        );
+        .catch((err) => {
+          console.error(`Error while fetching search results : `, err);
+          setIsLoadingResults(false);
+        });
     }
   };
 
@@ -53,6 +57,11 @@ export default function TabTwoScreen() {
         }}
       />
       <View style={{ width: "100%" }}>
+        {isLoadingResults &&
+          (!searchResults || searchResults.length === 0) &&
+          Array.from({ length: 5 }).map((_, idx) => (
+            <CompactMovieDetails key={idx} isSkeleton />
+          ))}
         {searchResults?.map((movie, idx) => (
           <CompactMovieDetails key={idx} {...movie} />
         ))}

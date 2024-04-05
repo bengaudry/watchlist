@@ -5,16 +5,16 @@ import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 
 export type CompactMovieDetailsProps = {
-  title: string;
-  releaseYear: string;
-  topCredits: Array<string>;
-  poster: {
+  title?: string;
+  releaseYear?: string;
+  topCredits?: Array<string>;
+  poster?: {
     url: string;
     width?: number;
     height?: number;
     alt?: string;
   };
-  movieId: string;
+  movieId?: string;
 };
 
 function AddToWatchlistBtn({
@@ -30,7 +30,7 @@ function AddToWatchlistBtn({
       style={{
         backgroundColor: isInWatchlist ? "gray" : "yellow",
         borderRadius: 9999,
-        width: "auto",
+        width: 150,
         display: "flex",
         flexDirection: "row",
         gap: 3,
@@ -58,9 +58,11 @@ export function CompactMovieDetails({
   movieId,
   isInWatchlist,
   onToggleFromWatchlist,
+  isSkeleton,
 }: CompactMovieDetailsProps & {
   isInWatchlist?: boolean;
   onToggleFromWatchlist?: () => void;
+  isSkeleton?: boolean;
 }) {
   const { push } = useRouter();
 
@@ -70,16 +72,21 @@ export function CompactMovieDetails({
     <Pressable onPress={openMovieDetailsPanel} style={styles.link}>
       <View style={styles.container}>
         <Image
-          src={poster.url}
-          alt={poster.alt}
+          src={isSkeleton || !poster ? "" : poster.url}
+          alt={isSkeleton || !poster ? "" : poster.alt}
           style={styles.poster}
-          onError={() => console.error("error while loading poster")}
           resizeMode="cover"
         />
         <View style={styles.infosContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.subtext}>{releaseYear}</Text>
-          <Text style={styles.subtext}>{topCredits.join(", ")}</Text>
+          <Text style={isSkeleton ? styles.loadingTitle : styles.title}>
+            {title}
+          </Text>
+          <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
+            {releaseYear}
+          </Text>
+          <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
+            {topCredits?.join(", ")}
+          </Text>
           <AddToWatchlistBtn
             isInWatchlist={isInWatchlist}
             onChange={onToggleFromWatchlist}
@@ -107,6 +114,7 @@ const styles = StyleSheet.create({
   },
   infosContainer: {
     flexDirection: "column",
+    gap: 3,
   },
   poster: {
     backgroundColor: "gray",
@@ -120,5 +128,18 @@ const styles = StyleSheet.create({
   subtext: {
     fontSize: 12,
     color: Colors.secondaryText,
+  },
+  loadingTitle: {
+    opacity: 0.3,
+    width: 150,
+    color: "transparent",
+    backgroundColor: Colors.secondaryText,
+  },
+  loadingSubtext: {
+    opacity: 0.3,
+    width: 250,
+    overflow: "hidden",
+    color: "transparent",
+    backgroundColor: Colors.secondaryText,
   },
 });
