@@ -19,5 +19,9 @@ const darkTheme = {
 
 export default {
   light: darkTheme,
-  dark: darkTheme
+  dark: darkTheme,
+  borderColor: "rgba(255,255,255,0.1)",
+  primaryText: "white",
+  secondaryText: "#707070",
+  inputBackground: "#181818",
 };

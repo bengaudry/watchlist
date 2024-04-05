@@ -1,14 +1,5 @@
-import { StyleSheet } from "react-native";
+import { WatchlistScreen } from "@/screens/watchlist";
 
-import { H1 } from "@/components/Themed";
-import { ScreenContainer } from "@/components/ScreenContainer";
-
-export default function TabOneScreen() {
-  return (
-    <ScreenContainer>
-      <H1>Watchlist</H1>
-    </ScreenContainer>
-  );
+export default function Watchlist() {
+  return <WatchlistScreen />;
 }
-
-const styles = StyleSheet.create({});

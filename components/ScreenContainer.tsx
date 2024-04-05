@@ -1,11 +1,12 @@
-import { View, ViewProps } from "./Themed";
+import { ScrollView } from "react-native";
+import { ViewProps } from "./Themed";
 
 export function ScreenContainer(props: ViewProps) {
   const { style, ...otherProps } = props;
   return (
-    <View
+    <ScrollView
       style={[
-        { paddingTop: 64, paddingBottom: 32, paddingHorizontal: 16 },
+        { paddingVertical: 64, paddingHorizontal: 16 },
         style,
       ]}
       {...otherProps}
