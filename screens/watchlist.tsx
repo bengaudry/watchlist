@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { StyleSheet } from "react-native";
+import { Pressable, StyleSheet } from "react-native";
 
 import { H1, View, Text } from "@/components/Themed";
 import { ScreenContainer } from "@/components/ScreenContainer";
@@ -14,8 +14,11 @@ import {
   CompactMovieDetails,
   CompactMovieDetailsProps,
 } from "@/components/custom/CompactMovieDetails";
+import { useRouter } from "expo-router";
 
 export function WatchlistScreen() {
+  const { push } = useRouter();
+
   const [movieDetails, setMovieDetails] =
     useState<CompactMovieDetailsProps[]>();
   const [watchlists, setWatchlists] = useState<UserWatchlists>();
@@ -47,10 +50,12 @@ export function WatchlistScreen() {
       <View>
         {watchlists && watchlists.length > 0 ? (
           watchlists.map((list, idx) => (
-            <View key={idx}>
-              <Text>{list.name}</Text>
-              <Text>{list.content.join(", ")}</Text>
-            </View>
+            <Pressable onPress={() => push(`watchlistcontent/${list.listId}`)}>
+              <View key={idx}>
+                <Text>{list.name}</Text>
+                <Text>{list.content.join(", ")}</Text>
+              </View>
+            </Pressable>
           ))
         ) : (
           <Text>No movies saved or watchlists created yet</Text>

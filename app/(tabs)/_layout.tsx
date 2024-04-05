@@ -74,6 +74,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen name="moviedetails/[movieid]" options={{ tabBarButton: () => null }} />
+      <Tabs.Screen name="watchlistcontent/[listId]" options={{ tabBarButton: () => null }} />
     </Tabs>
   );
 }
