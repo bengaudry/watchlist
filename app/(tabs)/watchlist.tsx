@@ -1,4 +1,4 @@
-import { WatchlistScreen } from "@/screens/watchlist";
+import { WatchlistScreen } from "@/screens/watchlists";
 
 export default function Watchlist() {
   return <WatchlistScreen />;

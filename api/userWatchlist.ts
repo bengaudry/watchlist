@@ -1,12 +1,23 @@
-const watchlist = ["tt1160419", "tt1122523"];
-
-export type Watchlist = Array<string>;
+export type Watchlist = Array<{ movieId: string; posterUrl: string }>;
 export type UserWatchlist = {
   name: string;
   listId: string;
   content: Watchlist;
 };
 export type UserWatchlists = Array<UserWatchlist>;
+
+const watchlist: Watchlist = [
+  {
+    movieId: "tt1160419",
+    posterUrl:
+      "https://m.media-amazon.com/images/M/MV5BMDQ0NjgyN2YtNWViNS00YjA3LTkxNDktYzFkZTExZGMxZDkxXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+  },
+  {
+    movieId: "tt1122523",
+    posterUrl:
+      "https://m.media-amazon.com/images/M/MV5BMDQ0NjgyN2YtNWViNS00YjA3LTkxNDktYzFkZTExZGMxZDkxXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+  },
+];
 
 /**
  * Returns the details of a given watchlist (from list id)
@@ -36,5 +47,5 @@ export async function deleteFromWatchlist(
   uid: string,
   movieId: string
 ): Promise<Watchlist> {
-  return watchlist.filter((val) => val != movieId);
+  return watchlist.filter((val) => val.movieId != movieId);
 }
