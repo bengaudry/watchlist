@@ -1,4 +1,4 @@
-const watchlist = ["tt1160419"];
+const watchlist = ["tt1160419", "tt1122523"];
 
 export type Watchlist = Array<string>;
 export type UserWatchlist = {
@@ -8,6 +8,9 @@ export type UserWatchlist = {
 };
 export type UserWatchlists = Array<UserWatchlist>;
 
+/**
+ * Returns the details of a given watchlist (from list id)
+ */
 export async function fetchUserWatchlist(
   uid: string,
   listId: string

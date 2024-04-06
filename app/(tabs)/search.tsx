@@ -1,15 +1,13 @@
-import { fetchMovieDetails } from "@/api/movieDetails";
 import { searchMovie } from "@/api/searchMovie";
-import { deleteFromWatchlist, fetchUserWatchlist } from "@/api/userWatchlist";
 import { ScreenContainer } from "@/components/ScreenContainer";
-import { H1, View, Text } from "@/components/Themed";
+import { H1, View } from "@/components/Themed";
 import {
   CompactMovieDetails,
   CompactMovieDetailsProps,
 } from "@/components/custom/CompactMovieDetails";
 import Colors from "@/constants/Colors";
 import { useEffect, useState } from "react";
-import { StyleSheet, TextInput } from "react-native";
+import { TextInput } from "react-native";
 
 export default function TabTwoScreen() {
   const [query, setQuery] = useState("");

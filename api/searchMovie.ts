@@ -10,7 +10,7 @@ export async function searchMovie(
   const options = {
     method: "GET",
     headers: {
-      "X-RapidAPI-Key": "944a8fc90fmsh55f46fcca8709bbp1b44a5jsna2ff4d7b3559",
+      "X-RapidAPI-Key": process.env.EXPO_PUBLIC_RAPID_API_KEY,
       "X-RapidAPI-Host": "imdb146.p.rapidapi.com",
     },
   };

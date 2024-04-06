@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 export type CompactMovieDetailsProps = {
   title?: string;
-  releaseYear?: string;
+  releaseYear?: number;
   topCredits?: Array<string>;
   poster?: {
     url: string;

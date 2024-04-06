@@ -1,7 +1,5 @@
 import React from "react";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { Link, Stack, Tabs } from "expo-router";
-import { Pressable } from "react-native";
+import { Tabs } from "expo-router";
 
 import Colors from "@/constants/Colors";
 import { useColorScheme } from "@/components/useColorScheme";
@@ -30,27 +28,13 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="watchlist"
         options={{
           title: "Watchlist",
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="bookmarks-outline" color={color} />
           ),
           headerShown: false,
-          // headerRight: () => (
-          //   <Link href="/modal" asChild>
-          //     <Pressable>
-          //       {({ pressed }) => (
-          //         <FontAwesome
-          //           name="info-circle"
-          //           size={25}
-          //           color={Colors[colorScheme ?? 'light'].text}
-          //           style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-          //         />
-          //       )}
-          //     </Pressable>
-          //   </Link>
-          // ),
         }}
       />
       <Tabs.Screen
@@ -73,8 +57,6 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
-      <Tabs.Screen name="moviedetails/[movieid]" options={{ tabBarButton: () => null }} />
-      <Tabs.Screen name="watchlistcontent/[listId]" options={{ tabBarButton: () => null }} />
     </Tabs>
   );
 }
