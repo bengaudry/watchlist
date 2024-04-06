@@ -101,6 +101,7 @@ const processApiData = (data: any): FullMovieDetails => {
 
 // TEST VERSION OF FETCH MOVIE DETAILS
 // DO NOT PUSH IN PROD !
+
 export async function fetchMovieDetails(movieid: string): Promise<FullMovieDetails> {
   return {
     movieId: "tt1160419",
