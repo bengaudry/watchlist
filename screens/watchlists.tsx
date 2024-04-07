@@ -1,5 +1,11 @@
 import { useEffect, useState } from "react";
-import { Image, Pressable, StyleSheet } from "react-native";
+import {
+  Alert,
+  Image,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+} from "react-native";
 import { Link, useRouter } from "expo-router";
 
 import {
@@ -10,6 +16,7 @@ import {
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { H1, ScrollView, Text, View } from "@/components/Themed";
 import Colors from "@/constants/Colors";
+import { Cta } from "@/components/buttons/Cta";
 
 const PostersScrollView = ({
   list,
@@ -43,20 +50,27 @@ const PostersScrollView = ({
 export function WatchlistScreen() {
   const { navigate } = useRouter();
   const [watchlists, setWatchlists] = useState<UserWatchlists>();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   // Fetch the user watchlist and the movie details corresponding to the movies in it
-  useEffect(() => {
-    fetchUserWatchlists("").then((lists) => setWatchlists(lists));
-  }, []);
+  const getWatchlists = () => {
+    setIsRefreshing(true);
+    fetchUserWatchlists("")
+      .then((lists) => setWatchlists(lists))
+      .finally(() => setIsRefreshing(false));
+  };
+  useEffect(getWatchlists, []);
 
   return (
     <ScreenContainer>
+      <RefreshControl refreshing={isRefreshing} />
       <H1 style={{ marginBottom: 25 }}>My watchlists</H1>
 
       {watchlists && watchlists.length > 0 ? (
-        watchlists.map((list) => (
+        watchlists.map((list, idx) => (
           <Pressable
             onPress={() => navigate(`/watchlistcontent/${list.listId}`)}
+            key={idx}
           >
             <View style={styles.watchlistContainer}>
               <View style={styles.watchlistHeader}>
@@ -72,6 +86,21 @@ export function WatchlistScreen() {
       ) : (
         <Text>No movies saved or watchlists created yet</Text>
       )}
+
+      <Cta
+        onPress={() =>
+          console.log(
+            Alert.prompt("Entrez le code partagé", "", (txt) =>
+              console.log(txt)
+            )
+          )
+        }
+        icon="link-outline"
+      >
+        <Text style={{ textAlign: "center", color: "black" }}>
+          Join a collaborative watchlist
+        </Text>
+      </Cta>
     </ScreenContainer>
   );
 }
