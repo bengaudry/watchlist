@@ -7,19 +7,20 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { User, onAuthStateChanged } from "firebase/auth";
 
-import { useColorScheme } from "@/components/useColorScheme";
+import { getFirebaseAuth } from "@/auth/firebase";
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
 } from "expo-router";
 
-// export const unstable_settings = {
-//   // Ensure that reloading on `/modal` keeps a back button present.
-//   initialRouteName: '(tabs)',
-// };
+export const unstable_settings = {
+  // Ensure that reloading on `/modal` keeps a back button present.
+  initialRouteName: '(tabs)',
+};
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
@@ -49,13 +50,30 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    onAuthStateChanged(getFirebaseAuth(), (usr) => {
+      setUser(usr);
+      console.log(usr);
+    });
+  }, []);
 
   return (
     <ThemeProvider value={DarkTheme}>
-      <Stack screenOptions={{ headerBackTitle: "Back" }}>
-        {/* screenOptions={{ animation: 'ios', animationDuration: 300 }} */}
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack
+        initialRouteName="/signin"
+        screenOptions={{
+          headerBackTitle: "Back",
+          animation: "ios",
+          animationDuration: 300,
+        }}
+      >
+        {user ? (
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        ) : (
+          <Stack.Screen name="(auth)/index" />
+        )}
       </Stack>
     </ThemeProvider>
   );
