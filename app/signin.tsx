@@ -21,7 +21,7 @@ export default function SignIn() {
   const handleSignin = async () => {
     setIsLoading(true);
     try {
-      const response = signInWithEmailAndPassword(
+      await signInWithEmailAndPassword(
         getFirebaseAuth(),
         email,
         password
@@ -36,7 +36,7 @@ export default function SignIn() {
   return (
     <>
       <Stack.Screen options={{ title: "Sign in" }} />
-      <ScreenContainer>
+      <ScreenContainer isLoading={isLoading}>
         <H1 style={{ marginBottom: 20 }}>Sign in</H1>
         <KeyboardAvoidingView style={{ flexDirection: "column", gap: 12 }}>
           <TextInput
@@ -49,6 +49,7 @@ export default function SignIn() {
           <TextInput
             style={styles.input}
             value={password}
+            secureTextEntry
             onChangeText={(val) => setPassword(val)}
             placeholder="Password"
           />
@@ -64,7 +65,7 @@ export default function SignIn() {
           }}
         >
           Don't have an account ?{" "}
-          <Link href="/register" style={{ color: "yellow" }}>
+          <Link href="/register" replace style={{ color: "yellow" }}>
             Register
           </Link>
         </Text>

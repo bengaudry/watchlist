@@ -41,7 +41,7 @@ export default function TabTwoScreen() {
       <TextInput
         autoFocus
         clearButtonMode="always"
-        placeholder="Search an actor, a movie, a serie..."
+        placeholder="Search a movie, a series, a tv show..."
         value={query}
         onChangeText={setQuery}
         onEndEditing={fetchQuery}

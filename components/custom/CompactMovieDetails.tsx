@@ -57,12 +57,14 @@ export function CompactMovieDetails({
   poster,
   movieId,
   isInWatchlist,
+  addedBy,
   onToggleFromWatchlist,
   isSkeleton,
 }: CompactMovieDetailsProps & {
   isInWatchlist?: boolean;
   onToggleFromWatchlist?: () => void;
   isSkeleton?: boolean;
+  addedBy?: string;
 }) {
   const { push } = useRouter();
 
@@ -87,6 +89,11 @@ export function CompactMovieDetails({
           <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
             {topCredits?.join(", ")}
           </Text>
+          {addedBy && (
+            <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
+              Added by : {addedBy}
+            </Text>
+          )}
           <AddToWatchlistBtn
             isInWatchlist={isInWatchlist}
             onChange={onToggleFromWatchlist}

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   TextInput,
   StyleSheet,
@@ -8,7 +8,9 @@ import {
 import { Link, router, Stack, useRouter } from "expo-router";
 import {
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   updateCurrentUser,
+  updateProfile,
 } from "firebase/auth";
 
 import { getFirebaseAuth } from "@/auth/firebase";
@@ -18,36 +20,36 @@ import { H1, Text } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 
 export default function Register() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [passwordConfirm, setPasswordConfirm] = useState("");
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("bengaudry@outlook.fr");
+  const [password, setPassword] = useState("Benou2005");
+  const [passwordConfirm, setPasswordConfirm] = useState("Benou2005");
+  const [username, setUsername] = useState("bengdry");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async () => {
-    try {
-      const response = await createUserWithEmailAndPassword(
-        getFirebaseAuth(),
-        email,
-        password
-      );
-      const { displayName, ...otherUserDetails } = response.user;
-      await updateCurrentUser(getFirebaseAuth(), {
-        ...otherUserDetails,
-        displayName: username,
-      });
-    } catch (err: any) {
-      Alert.alert(
-        "Error while creating user",
-        err.code.replaceAll("auth/", "").replaceAll("-", " ")
-      );
+    setIsLoading(true);
+    const userCredential = await createUserWithEmailAndPassword(
+      getFirebaseAuth(),
+      email,
+      password
+    );
+
+    const user = getFirebaseAuth().currentUser;
+    if (userCredential && user) {
+      try {
+        sendEmailVerification(user);
+        updateProfile(user, { displayName: username });
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 
   return (
     <>
       <Stack.Screen options={{ title: "Register" }} />
-      <ScreenContainer>
-        <H1 style={{ marginBottom: 20 }}>Register</H1>
+      <ScreenContainer isLoading={isLoading}>
+        {isLoading && <Text>Loading</Text>}
         <KeyboardAvoidingView style={{ flexDirection: "column", gap: 12 }}>
           <TextInput
             inputMode="email"
@@ -92,7 +94,7 @@ export default function Register() {
           }}
         >
           Already have an account ?{" "}
-          <Link href="/signin" style={{ color: "yellow" }}>
+          <Link href="/signin" replace style={{ color: "yellow" }}>
             Sign in
           </Link>
         </Text>

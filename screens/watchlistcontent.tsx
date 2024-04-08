@@ -66,12 +66,20 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
           >
             <H1 style={{ textTransform: "capitalize" }}>{watchlist?.name}</H1>
             <Pressable onPress={() => setSettingsModalOpened(true)}>
-              <Ionicons name="share-outline" size={28} color={Colors.secondaryText} />
+              <Ionicons
+                name="share-outline"
+                size={28}
+                color={Colors.secondaryText}
+              />
             </Pressable>
           </View>
           <Text>
             {moviesDetails.map((details, idx) => (
-              <CompactMovieDetails {...details} key={idx} />
+              <CompactMovieDetails
+                {...details}
+                addedBy={watchlist?.content[idx].addedBy.userName ?? ""}
+                key={idx}
+              />
             ))}
           </Text>
         </View>

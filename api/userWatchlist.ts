@@ -1,4 +1,8 @@
-export type Watchlist = Array<{ movieId: string; posterUrl: string }>;
+export type Watchlist = Array<{
+  movieId: string;
+  posterUrl: string;
+  addedBy: { userName: string; uid: string };
+}>;
 export type UserWatchlist = {
   name: string;
   listId: string;
@@ -11,11 +15,19 @@ const watchlist: Watchlist = [
     movieId: "tt1160419",
     posterUrl:
       "https://m.media-amazon.com/images/M/MV5BMDQ0NjgyN2YtNWViNS00YjA3LTkxNDktYzFkZTExZGMxZDkxXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+    addedBy: {
+      userName: "bengdry",
+      uid: "bengdry",
+    },
   },
   {
     movieId: "tt1122523",
     posterUrl:
       "https://m.media-amazon.com/images/M/MV5BMDQ0NjgyN2YtNWViNS00YjA3LTkxNDktYzFkZTExZGMxZDkxXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg",
+    addedBy: {
+      userName: "bengdry",
+      uid: "bengdry",
+    },
   },
 ];
 
