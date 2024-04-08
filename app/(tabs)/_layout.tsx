@@ -17,9 +17,8 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-  const auth = null;
 
-  return auth ? (
+  return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
@@ -28,6 +27,13 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
       }}
     >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: "Watchlist",
+          tabBarButton: () => null,
+        }}
+      />
       <Tabs.Screen
         name="watchlist"
         options={{
@@ -59,5 +65,5 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
-  ) : <Redirect href="/" />;
+  );
 }

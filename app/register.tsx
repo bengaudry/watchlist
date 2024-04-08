@@ -5,7 +5,7 @@ import {
   KeyboardAvoidingView,
   Alert,
 } from "react-native";
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, router, Stack, useRouter } from "expo-router";
 import {
   createUserWithEmailAndPassword,
   updateCurrentUser,
@@ -18,12 +18,30 @@ import { H1, Text } from "@/components/Themed";
 import Colors from "@/constants/Colors";
 
 export default function Register() {
-  const { navigate } = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [username, setUsername] = useState("");
+
+  const handleRegister = async () => {
+    try {
+      const response = await createUserWithEmailAndPassword(
+        getFirebaseAuth(),
+        email,
+        password
+      );
+      const { displayName, ...otherUserDetails } = response.user;
+      await updateCurrentUser(getFirebaseAuth(), {
+        ...otherUserDetails,
+        displayName: username,
+      });
+    } catch (err: any) {
+      Alert.alert(
+        "Error while creating user",
+        err.code.replaceAll("auth/", "").replaceAll("-", " ")
+      );
+    }
+  };
 
   return (
     <>
@@ -62,43 +80,7 @@ export default function Register() {
             value={passwordConfirm}
             onChangeText={(val) => setPasswordConfirm(val)}
           />
-          <Cta
-            style={{ marginTop: 16 }}
-            onPress={() => {
-              if (
-                password.length > 0 &&
-                passwordConfirm === password &&
-                username.length > 0 &&
-                email.length > 0
-              ) {
-                createUserWithEmailAndPassword(
-                  getFirebaseAuth(),
-                  email,
-                  password
-                )
-                  .then((user) => {
-                    const { displayName, ...otherUserDetails } = user.user;
-                    updateCurrentUser(getFirebaseAuth(), {
-                      ...otherUserDetails,
-                      displayName: username,
-                    })
-                      .then(() => navigate("/watchlist"))
-                      .catch((err) =>
-                        Alert.alert(
-                          "Error while creating profile",
-                          err.code.replaceAll("auth/", "").replaceAll("-", " ")
-                        )
-                      );
-                  })
-                  .catch((err) =>
-                    Alert.alert(
-                      "Error while creating user",
-                      err.code.replaceAll("auth/", "").replaceAll("-", " ")
-                    )
-                  );
-              }
-            }}
-          >
+          <Cta style={{ marginTop: 16 }} onPress={handleRegister}>
             <Text style={{ color: "black" }}>Register</Text>
           </Cta>
         </KeyboardAvoidingView>
@@ -114,7 +96,6 @@ export default function Register() {
             Sign in
           </Link>
         </Text>
-
       </ScreenContainer>
     </>
   );

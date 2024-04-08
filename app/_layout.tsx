@@ -1,16 +1,13 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { router, Stack, useRouter } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 
-import { getFirebaseAuth } from "@/auth/firebase";
+import { getCurrentUser, getFirebaseAuth } from "@/auth/firebase";
+import { Text } from "@/components/Themed";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -19,7 +16,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: "(tabs)",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -54,26 +51,26 @@ function RootLayoutNav() {
 
   useEffect(() => {
     onAuthStateChanged(getFirebaseAuth(), (usr) => {
+      console.log("🚀 ~ onAuthStateChanged ~ usr:", usr?.email);
       setUser(usr);
-      console.log(usr);
+      if (usr) router.replace("/(tabs)");
+      else router.replace("/");
     });
   }, []);
 
   return (
     <ThemeProvider value={DarkTheme}>
       <Stack
-        initialRouteName="/signin"
         screenOptions={{
           headerBackTitle: "Back",
           animation: "ios",
           animationDuration: 300,
         }}
       >
-        {user ? (
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        ) : (
-          <Stack.Screen name="(auth)/index" />
-        )}
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
+        <Stack.Screen name="signin" options={{ presentation: "modal", headerBackVisible: true }} />
+        <Stack.Screen name="register" options={{ presentation: "modal" }} />
       </Stack>
     </ThemeProvider>
   );

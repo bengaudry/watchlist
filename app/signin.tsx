@@ -3,7 +3,7 @@ import { Cta } from "@/components/buttons/Cta";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { H1, Text } from "@/components/Themed";
 import Colors from "@/constants/Colors";
-import { Link, Stack, useRouter } from "expo-router";
+import { Link, router, Stack, useRouter } from "expo-router";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect, useState } from "react";
 import {
@@ -14,15 +14,9 @@ import {
 } from "react-native";
 
 export default function SignIn() {
-  const { navigate } = useRouter();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    signOut().then((val) => console.log("signed out"))
-  }, [])
 
   const handleSignin = async () => {
     setIsLoading(true);
@@ -32,7 +26,6 @@ export default function SignIn() {
         email,
         password
       );
-      console.log("signin response : ", response)
     } catch (err: any) {
       Alert.alert(err.message);
     } finally {
