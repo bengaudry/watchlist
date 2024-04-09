@@ -22,16 +22,15 @@ export function ShareWatchlistCodeModal({
   isOpened,
   setOpened,
   generateCode,
+  guests,
 }: {
   shareCode: string;
   isOpened: boolean;
   setOpened: (val: boolean) => void;
   generateCode: () => void;
+  guests?: Array<{ userName: string; uid: string }>;
 }) {
   const [copied, setCopied] = useState(false);
-  const [guests, setGuests] = useState([
-    { userName: "Sarah", uid: "kqsdjnqlCS54DQF5" },
-  ]);
 
   const handleShareCode = () => {
     Share.share(
@@ -51,7 +50,7 @@ export function ShareWatchlistCodeModal({
     setTimeout(() => setCopied(false), 1500);
   };
 
-  const handleDeleteUserBtnPressed = (user: (typeof guests)[0]) => {
+  const handleDeleteUserBtnPressed = (user: any) => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: ["Remove from watchlist", "Cancel"],
@@ -67,23 +66,23 @@ export function ShareWatchlistCodeModal({
               {
                 text: `Remove ${user.userName}'s contributions`,
                 style: "destructive",
-                onPress: () => {
-                  setGuests((prevGuests) =>
-                    prevGuests.filter(
-                      (deletingUser) => deletingUser.uid !== user.uid
-                    )
-                  );
-                },
+                // onPress: () => {
+                //   setGuests((prevGuests) =>
+                //     prevGuests.filter(
+                //       (deletingUser) => deletingUser.uid !== user.uid
+                //     )
+                //   );
+                // },
               },
               {
                 text: `Keep ${user.userName}'s contributions`,
-                onPress: () => {
-                  setGuests((prevGuests) =>
-                    prevGuests.filter(
-                      (deletingUser) => deletingUser.uid !== user.uid
-                    )
-                  );
-                },
+                // onPress: () => {
+                //   setGuests((prevGuests) =>
+                //     prevGuests.filter(
+                //       (deletingUser) => deletingUser.uid !== user.uid
+                //     )
+                //   );
+                // },
               },
               { text: "Cancel", style: "cancel" },
             ]
@@ -147,51 +146,57 @@ export function ShareWatchlistCodeModal({
         <Separator />
 
         <Text style={styles.modalGuestsSectionTitle}>Guests</Text>
-        {guests && guests.length > 0 ? (
-          guests.map((user, idx) => (
-            <View
-              key={idx}
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
+        <View style={styles.guestListWrapper}>
+          {guests && guests.length > 0 ? (
+            guests.map((user, idx) => (
               <View
                 key={idx}
-                style={{ flexDirection: "row", alignItems: "center", gap: 12 }}
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                }}
               >
-                <LinearGradient
-                  colors={["rgba(70, 70, 70, .4)", "rgba(0,0,0,0)"]}
+                <View
+                  key={idx}
                   style={{
-                    backgroundColor: "pink",
-                    width: 50,
-                    aspectRatio: "1/1",
-                    borderRadius: 9999,
+                    flexDirection: "row",
                     alignItems: "center",
-                    justifyContent: "center",
+                    gap: 12,
                   }}
                 >
-                  <Text style={{ fontSize: 22, fontWeight: "600" }}>
-                    {user.userName[0]}
-                  </Text>
-                </LinearGradient>
-                <Text style={{ fontSize: 18 }}>{user.userName}</Text>
+                  <LinearGradient
+                    colors={["rgba(70, 70, 70, .4)", "rgba(0,0,0,0)"]}
+                    style={{
+                      backgroundColor: "gray",
+                      width: 50,
+                      aspectRatio: "1/1",
+                      borderRadius: 9999,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <Text style={{ fontSize: 22, fontWeight: "600" }}>
+                      {user.userName[0]}
+                    </Text>
+                  </LinearGradient>
+                  <Text style={{ fontSize: 18 }}>{user.userName}</Text>
+                </View>
+                <Pressable onPress={() => handleDeleteUserBtnPressed(user)}>
+                  <Ionicons
+                    name="ellipsis-vertical"
+                    size={22}
+                    color={Colors.secondaryText}
+                  />
+                </Pressable>
               </View>
-              <Pressable onPress={() => handleDeleteUserBtnPressed(user)}>
-                <Ionicons
-                  name="ellipsis-vertical"
-                  size={22}
-                  color={Colors.secondaryText}
-                />
-              </Pressable>
-            </View>
-          ))
-        ) : (
-          <Text style={{ color: Colors.secondaryText }}>
-            The persons you invited to share this watchlist will appear here
-          </Text>
-        )}
+            ))
+          ) : (
+            <Text style={{ color: Colors.secondaryText }}>
+              The persons you invited to share this watchlist will appear here
+            </Text>
+          )}
+        </View>
       </ScrollView>
     </Modal>
   );
@@ -231,4 +236,8 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     marginBottom: 8,
   },
+  guestListWrapper: {
+    flexDirection: "column",
+    gap: 15
+  }
 });

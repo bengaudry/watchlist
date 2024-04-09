@@ -67,37 +67,37 @@ const processApiData = (data: any): FullMovieDetails => {
 /**
  * Fetches all movie details from imdb api and turns it into usable data
  */
-// export async function fetchMovieDetails(
-//   movieid: string
-// ): Promise<FullMovieDetails> {
-//   if (!process.env.EXPO_PUBLIC_RAPID_API_KEY)
-//     throw new Error("Undefined api key");
+export async function fetchMovieDetailss(
+  movieid: string
+): Promise<FullMovieDetails> {
+  if (!process.env.EXPO_PUBLIC_RAPID_API_KEY)
+    throw new Error("Undefined api key");
 
-//   const url = `https://imdb146.p.rapidapi.com/v1/title/?id=${movieid}`;
-//   const options = {
-//     method: "GET",
-//     headers: {
-//       "X-RapidAPI-Key": "944a8fc90fmsh55f46fcca8709bbp1b44a5jsna2ff4d7b3559",
-//       "X-RapidAPI-Host": "imdb146.p.rapidapi.com",
-//     },
-//   };
+  const url = `https://imdb146.p.rapidapi.com/v1/title/?id=${movieid}`;
+  const options = {
+    method: "GET",
+    headers: {
+      "X-RapidAPI-Key": "944a8fc90fmsh55f46fcca8709bbp1b44a5jsna2ff4d7b3559",
+      "X-RapidAPI-Host": "imdb146.p.rapidapi.com",
+    },
+  };
 
-//   let result: FullMovieDetails = {};
+  let result: FullMovieDetails = {};
 
-//   await fetch(encodeURI(url), options)
-//     .then((val) => val.json())
-//     .then((json) => {
-//       console.log("moviedetails json : ", json);
-//       if ("error" in json) throw new Error(json.error);
-//       if ("message" in json) throw new Error(json.message);
-//       result = processApiData(json);
-//     })
-//     .catch((err) => {
-//       throw new Error(err);
-//     });
+  await fetch(encodeURI(url), options)
+    .then((val) => val.json())
+    .then((json) => {
+      console.log("moviedetails json : ", json);
+      if ("error" in json) throw new Error(json.error);
+      if ("message" in json) throw new Error(json.message);
+      result = processApiData(json);
+    })
+    .catch((err) => {
+      throw new Error(err);
+    });
 
-//   return result;
-// }
+  return result;
+}
 
 // TEST VERSION OF FETCH MOVIE DETAILS
 // DO NOT PUSH IN PROD !

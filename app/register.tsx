@@ -1,15 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   TextInput,
   StyleSheet,
   KeyboardAvoidingView,
   Alert,
 } from "react-native";
-import { Link, router, Stack, useRouter } from "expo-router";
+import { Link, Stack } from "expo-router";
 import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
-  updateCurrentUser,
   updateProfile,
 } from "firebase/auth";
 
@@ -18,6 +17,7 @@ import { Cta } from "@/components/buttons/Cta";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { H1, Text } from "@/components/Themed";
 import Colors from "@/constants/Colors";
+import { initializeUserGlobalWatchlist } from "@/api/userWatchlist";
 
 export default function Register() {
   const [email, setEmail] = useState("bengaudry@outlook.fr");
@@ -38,6 +38,8 @@ export default function Register() {
     if (userCredential && user) {
       try {
         sendEmailVerification(user);
+        Alert.alert("Verify your email", "Please check your inbox for a verification mail (don't forget the spam folder).");
+        initializeUserGlobalWatchlist(user.uid);
         updateProfile(user, { displayName: username });
       } catch (error) {
         console.error(error);

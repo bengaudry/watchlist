@@ -4,7 +4,7 @@ import {
   useWindowDimensions,
 } from "react-native";
 import { ScrollViewProps, View } from "./Themed";
-import { Ionicons } from "@expo/vector-icons";
+import { LoadingIndicator } from "./custom/LoadingView";
 
 export function ScreenContainer(
   props: ScrollViewProps & { isLoading?: boolean }
@@ -25,22 +25,7 @@ export function ScreenContainer(
       {...otherProps}
     >
       {children}
-      {isLoading && (
-        <View
-          style={{
-            position: "absolute",
-            width: width,
-            height: height,
-            top: -64,
-            left: -16,
-            backgroundColor: "rgba(0, 0, 0, 0.7)",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator animating size="large" />
-        </View>
-      )}
+      <LoadingIndicator isLoading={isLoading} offsetX={-16} offsetY={-64} />
     </ScrollView>
   );
 }

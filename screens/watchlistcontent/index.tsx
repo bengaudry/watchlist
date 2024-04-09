@@ -3,7 +3,11 @@ import { useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
-import { fetchUserWatchlist, UserWatchlist } from "@/api/userWatchlist";
+import {
+  fetchUserGlobalWatchlist,
+  fetchUserWatchlist,
+  Watchlist,
+} from "@/api/userWatchlist";
 import { fetchCompactMovieDetails } from "@/api/movieDetails";
 import {
   CompactMovieDetails,
@@ -13,24 +17,43 @@ import { H1, Text, View } from "@/components/Themed";
 import { generateRandomString } from "@/functions/strings";
 import { ShareWatchlistCodeModal } from "@/components/custom/ShareWatchlistCodeModal";
 import Colors from "@/constants/Colors";
+import { getCurrentUser } from "@/auth/firebase";
+import { LoadingIndicator } from "@/components/custom/LoadingView";
 
 export function WatchlistContentScreen({ id }: { id: string | string[] }) {
-  const [watchlist, setWatchlist] = useState<UserWatchlist | null>();
+  const [watchlist, setWatchlist] = useState<Watchlist | null>();
   const [moviesDetails, setMoviesDetails] = useState<
     CompactMovieDetailsProps[]
   >([]);
   const [settingsModalOpened, setSettingsModalOpened] = useState(false);
   const [shareCode, setShareCode] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Fetch the watchlist content based on the user id
   const fetchlist = () => {
-    console.log("fetching watchlists");
-    fetchUserWatchlist("", id as string)
-      .then(setWatchlist)
-      .catch((err) => console.error(err));
+    const uid = getCurrentUser()?.uid;
+    if (!uid) return;
+    setIsLoading(true);
+    // If list id is global, we fetch the global watchlist content
+    if (id === "global") {
+      fetchUserGlobalWatchlist(uid)
+        .then((list) => {
+          if (list) setWatchlist({ name: "All", ...list });
+        })
+        .finally(() => setIsLoading(false));
+    } else {
+      // else, we just fetch content from the id
+      fetchUserWatchlist(uid, id as string)
+        .then(setWatchlist)
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
+    }
   };
 
+  // Fetch the movie details for each item in the watchlist
   const fetchWatchlistMovieDetails = () => {
     if (!watchlist) return;
+    setIsLoading(true);
     setMoviesDetails([]);
     watchlist.content.map((movie) => {
       fetchCompactMovieDetails(movie.movieId)
@@ -39,7 +62,8 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
             return [...prevDetails, details];
           });
         })
-        .catch((err) => console.error(err));
+        .catch((err) => console.error(err))
+        .finally(() => setIsLoading(false));
     });
   };
 
@@ -48,14 +72,22 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
 
   return (
     <>
-      <ShareWatchlistCodeModal
-        isOpened={settingsModalOpened}
-        setOpened={setSettingsModalOpened}
-        generateCode={() => setShareCode(generateRandomString(12))}
-        shareCode={shareCode}
+      <Stack.Screen
+        options={{
+          title: isLoading || !watchlist ? "Loading" : watchlist?.name,
+        }}
       />
+      <LoadingIndicator isLoading={isLoading} />
+      {id !== "global" && (
+        <ShareWatchlistCodeModal
+          isOpened={settingsModalOpened}
+          setOpened={setSettingsModalOpened}
+          generateCode={() => setShareCode(generateRandomString(12))}
+          shareCode={shareCode}
+          guests={watchlist?.guests}
+        />
+      )}
       <View>
-        <Stack.Screen options={{ headerTitle: `${watchlist?.name}` }} />
         <View style={{ paddingHorizontal: 16, paddingVertical: 32 }}>
           <View
             style={{
@@ -64,20 +96,24 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
               justifyContent: "space-between",
             }}
           >
-            <H1 style={{ textTransform: "capitalize" }}>{watchlist?.name}</H1>
-            <Pressable onPress={() => setSettingsModalOpened(true)}>
-              <Ionicons
-                name="share-outline"
-                size={28}
-                color={Colors.secondaryText}
-              />
-            </Pressable>
+            <H1 style={{ textTransform: "capitalize", marginBottom: 15 }}>
+              {watchlist?.name}
+            </H1>
+            {id !== "global" && (
+              <Pressable onPress={() => setSettingsModalOpened(true)}>
+                <Ionicons
+                  name="share-outline"
+                  size={28}
+                  color={Colors.secondaryText}
+                />
+              </Pressable>
+            )}
           </View>
           <Text>
             {moviesDetails.map((details, idx) => (
               <CompactMovieDetails
                 {...details}
-                addedBy={watchlist?.content[idx].addedBy.userName ?? ""}
+                addedBy={watchlist?.content[idx].addedBy?.userName ?? ""}
                 key={idx}
               />
             ))}
