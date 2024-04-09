@@ -41,7 +41,7 @@ export function ShareWatchlistCodeModal({
           "com.apple.DocumentManagerUICore.SaveToFiles",
         ],
       }
-    ).then((shareact) => console.log(shareact));
+    )
   };
 
   const handleCopyCodeToClipboard = () => {

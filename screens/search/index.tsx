@@ -20,7 +20,6 @@ export function SearchScreen () {
       setIsLoadingResults(true);
       searchMovie(query)
         .then((movies) => {
-          console.log("search results : ", movies);
           setSearchResults(movies);
           setIsLoadingResults(false);
         })

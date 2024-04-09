@@ -2,20 +2,27 @@ import { Ionicons } from "@expo/vector-icons";
 import { ReactNode } from "react";
 import { Pressable, PressableProps } from "react-native";
 
+import { Text } from "../Themed";
+
 export function Cta(
   props: PressableProps & {
     icon?: (typeof Ionicons)["name"];
     fullWidth?: boolean;
+    importance?: "primary" | "secondary";
+    label?: string;
   }
 ) {
-  const { style, fullWidth, icon, children, ...otherProps } = props;
+  const { label, importance, style, fullWidth, icon, children, ...otherProps } =
+    props;
+
+  const isPrimary = () => !importance || importance == "primary";
 
   return (
     <Pressable
       style={[
         {
           width: fullWidth ? "100%" : "auto",
-          backgroundColor: "yellow",
+          backgroundColor: isPrimary() ? "yellow" : "rgba(70, 70 ,70, 1)",
           paddingHorizontal: 16,
           paddingVertical: 8,
           borderRadius: 9999,
@@ -29,10 +36,22 @@ export function Cta(
       ]}
       {...otherProps}
     >
-      {
-        //@ts-ignore
-        icon && <Ionicons size={24} name={icon} />
-      }
+      {icon && (
+        <Ionicons
+          size={24}
+          //@ts-ignore
+          name={icon}
+          color={isPrimary() ? "black" : "white"}
+        />
+      )}
+      <Text
+        style={{
+          textAlign: "center",
+          color: isPrimary() ? "black" : "white",
+        }}
+      >
+        {label}
+      </Text>
       {children as ReactNode}
     </Pressable>
   );

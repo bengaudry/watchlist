@@ -51,7 +51,6 @@ function RootLayoutNav() {
 
   useEffect(() => {
     onAuthStateChanged(getFirebaseAuth(), (usr) => {
-      console.log("🚀 ~ onAuthStateChanged ~ usr:", usr?.email);
       setUser(usr);
       if (usr) router.replace("/(tabs)");
       else router.replace("/");

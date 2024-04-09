@@ -18,7 +18,6 @@ export async function searchMovie(
   // await fetch(encodeURI(url), options)
   //   .then((val) => val.json())
   //   .then((json) => {
-  //     console.log("json", json);
   //     if ("error" in json) throw new Error(json.error);
   //     if ("message" in json) throw new Error(json.message);
       const json = {

@@ -9,17 +9,19 @@ import {
 import { Link, useRouter } from "expo-router";
 
 import {
+  createWatchlist,
   fetchUserGlobalWatchlist,
   fetchUserWatchlists,
   GlobalWatchlist,
   Watchlist,
   WatchlistContent,
 } from "@/api/userWatchlist";
+import { getCurrentUser } from "@/auth/firebase";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { H1, ScrollView, Text, View } from "@/components/Themed";
-import Colors from "@/constants/Colors";
 import { Cta } from "@/components/buttons/Cta";
-import { getCurrentUser } from "@/auth/firebase";
+import { Separator } from "@/components/Separator";
+import Colors from "@/constants/Colors";
 
 const PostersScrollView = ({
   list,
@@ -30,7 +32,7 @@ const PostersScrollView = ({
 }) => (
   <ScrollView horizontal>
     <View style={styles.watchlistPostersScrollView}>
-      {list &&
+      {list && list.length > 0 ? (
         list.map((movie, idx) => (
           <Pressable
             onPress={() => navigate(`/moviedetails/${movie.movieId}`)}
@@ -43,10 +45,16 @@ const PostersScrollView = ({
                 height: 150,
                 width: (9 * 150) / 16,
                 borderRadius: 5,
+                backgroundColor: "rgba(70, 70, 70, 1)",
               }}
             />
           </Pressable>
-        ))}
+        ))
+      ) : (
+        <View style={{ height: 150 }}>
+          <Text style={{ color: Colors.secondaryText }}>Nothing here yet</Text>
+        </View>
+      )}
     </View>
   </ScrollView>
 );
@@ -72,16 +80,31 @@ export function WatchlistScreen() {
   };
   useEffect(getWatchlists, []);
 
+  const createNewList = () =>
+    Alert.prompt(
+      "Create a watchlist",
+      "Choose a name for this watchlist",
+      (txt) => {
+        const uid = getCurrentUser()?.uid;
+        if (uid) {
+          createWatchlist(uid, { name: txt }).then(getWatchlists);
+        }
+      }
+    );
+
+  const joinCollaborativeList = () =>
+    Alert.prompt(
+      "Join a collaborative watchlist",
+      "Enter the code that has been shared to you",
+      (txt) => txt
+    );
+
   return (
     <ScreenContainer>
-      <RefreshControl refreshing={isRefreshing} />
+      <RefreshControl refreshing={isRefreshing} onRefresh={getWatchlists} />
       <H1 style={{ marginBottom: 25 }}>My watchlists</H1>
 
-      <Pressable
-        onPress={() =>
-          navigate(`/watchlistcontent/global`)
-        }
-      >
+      <Pressable onPress={() => navigate(`/watchlistcontent/global`)}>
         <View style={styles.watchlistContainer}>
           <View style={styles.watchlistHeader}>
             <Text style={styles.watchlistName}>All</Text>
@@ -95,6 +118,22 @@ export function WatchlistScreen() {
           />
         </View>
       </Pressable>
+
+      <View style={{ flexDirection: "row", gap: 12 }}>
+        <Cta
+          onPress={joinCollaborativeList}
+          icon="link-outline"
+          style={{ flex: 1 }}
+          importance="secondary"
+          label="Join watchlist"
+        />
+        <Cta
+          onPress={createNewList}
+          icon="add-outline"
+          style={{ flex: 1 }}
+          label="Create watchlist"
+        />
+      </View>
 
       {watchlists && watchlists.length > 0 ? (
         watchlists.map((list, idx) => (
@@ -116,21 +155,6 @@ export function WatchlistScreen() {
       ) : (
         <Text>No movies saved or watchlists created yet</Text>
       )}
-
-      <Cta
-        onPress={() =>
-          console.log(
-            Alert.prompt("Entrez le code partagé", "", (txt) =>
-              console.log(txt)
-            )
-          )
-        }
-        icon="link-outline"
-      >
-        <Text style={{ textAlign: "center", color: "black" }}>
-          Join a collaborative watchlist
-        </Text>
-      </Cta>
     </ScreenContainer>
   );
 }
