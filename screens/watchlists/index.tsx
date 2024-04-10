@@ -20,7 +20,6 @@ import { getCurrentUser } from "@/auth/firebase";
 import { ScreenContainer } from "@/components/ScreenContainer";
 import { H1, ScrollView, Text, View } from "@/components/Themed";
 import { Cta } from "@/components/buttons/Cta";
-import { Separator } from "@/components/Separator";
 import Colors from "@/constants/Colors";
 
 const PostersScrollView = ({
@@ -162,9 +161,6 @@ export function WatchlistScreen() {
 const styles = StyleSheet.create({
   watchlistContainer: {
     width: "100%",
-    borderBottomWidth: 1,
-    borderTopWidth: 1,
-    borderColor: Colors.borderColor,
     paddingVertical: 16,
   },
   watchlistHeader: {

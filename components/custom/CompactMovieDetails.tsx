@@ -3,6 +3,7 @@ import { View, Text } from "../Themed";
 import Colors from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
+import { getCurrentUser } from "@/auth/firebase";
 
 export type CompactMovieDetailsProps = {
   title?: string;
@@ -30,30 +31,26 @@ function AddToWatchlistBtn({
       style={{
         backgroundColor: isInWatchlist ? "gray" : "yellow",
         borderRadius: 9999,
-        width: 150,
+        width: 35,
+        aspectRatio: "1/1",
         display: "flex",
         flexDirection: "row",
         gap: 3,
-        marginVertical: 8,
-        paddingVertical: 5,
         alignItems: "center",
         justifyContent: "center",
       }}
     >
       <Ionicons
-        name={`${isInWatchlist ? "checkmark-outline" : "add-outline"}`}
+        name={`${isInWatchlist ? "bookmark" : "bookmark-outline"}`}
         color="black"
-        size={25}
+        size={22}
       />
-      <Text style={{ color: "black" }}>Watchlist</Text>
     </Pressable>
   );
 }
 
 export function CompactMovieDetails({
   title,
-  releaseYear,
-  topCredits,
   poster,
   movieId,
   isInWatchlist,
@@ -64,7 +61,7 @@ export function CompactMovieDetails({
   isInWatchlist?: boolean;
   onToggleFromWatchlist?: () => void;
   isSkeleton?: boolean;
-  addedBy?: string;
+  addedBy?: Array<{ userName: string; uid: string }>;
 }) {
   const { push } = useRouter();
 
@@ -83,21 +80,26 @@ export function CompactMovieDetails({
           <Text style={isSkeleton ? styles.loadingTitle : styles.title}>
             {title}
           </Text>
-          <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
-            {releaseYear}
-          </Text>
-          <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
-            {topCredits?.join(", ")}
-          </Text>
-          {addedBy && (
-            <Text style={isSkeleton ? styles.loadingSubtext : styles.subtext}>
-              Added by : {addedBy}
-            </Text>
-          )}
-          <AddToWatchlistBtn
-            isInWatchlist={isInWatchlist}
-            onChange={onToggleFromWatchlist}
-          />
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
+            <Text style={styles.subtext}>Added by</Text>
+            {addedBy && addedBy.length > 0 ? (
+              addedBy
+                .slice(0, 2)
+                .map(
+                  ({ userName, uid }) =>
+                    uid !== getCurrentUser()?.uid && (
+                      <Text style={styles.subtext}>{userName}</Text>
+                    )
+                )
+            ) : (
+              <Text style={styles.subtext}>you</Text>
+            )}
+            <AddToWatchlistBtn
+              isInWatchlist={isInWatchlist}
+              onChange={onToggleFromWatchlist}
+            />
+          </View>
         </View>
       </View>
     </Pressable>
@@ -105,28 +107,29 @@ export function CompactMovieDetails({
 }
 
 const styles = StyleSheet.create({
-  container: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 20,
-    width: "100%",
-  },
   link: {
     display: "flex",
     width: "100%",
-    paddingVertical: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderColor,
+    paddingBottom: 6,
+  },
+  container: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 12,
+    width: "100%",
   },
   infosContainer: {
-    flexDirection: "column",
-    gap: 3,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
   },
   poster: {
     backgroundColor: "gray",
-    width: (9 * 120) / 16,
-    height: 120,
+    width: "100%",
+    height: 200,
+    borderRadius: 12,
   },
   title: {
     fontWeight: "500",

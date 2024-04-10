@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet } from "react-native";
+import {
+  Dimensions,
+  Image,
+  ImageBackground,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import { Stack } from "expo-router";
 
 import Colors from "@/constants/Colors";
@@ -31,6 +38,7 @@ export function MovieDetailsScreen({
 }) {
   const [movieDetails, setMovieDetails] = useState<FullMovieDetails>();
   const [isLoading, setIsLoading] = useState(false);
+  const [isPosterFullscreen, setisPosterFullscreen] = useState(false);
 
   const getMovieDetails = () => {
     if (!movieid) return;
@@ -46,32 +54,25 @@ export function MovieDetailsScreen({
 
   return (
     <View style={{ position: "relative" }}>
-      <LoadingIndicator isLoading={isLoading} opacity={1} />
-      <Stack.Screen
-        options={{
-          headerTitle: movieDetails?.title ?? "Loading",
-          headerBackButtonMenuEnabled: true,
-          headerBlurEffect: "dark",
-          headerTransparent: true,
+      <Pressable
+        onPress={() => setisPosterFullscreen(false)}
+        style={{
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          width: "100%",
+          height: "100%",
+          alignItems: "center",
+          alignContent: "center",
+          top: 0,
+          left: 0,
+          position: "absolute",
+          zIndex: 4,
+          opacity: isPosterFullscreen ? 1 : 0,
+          pointerEvents: isPosterFullscreen ? "auto" : "none",
         }}
-      />
-      <ScrollView>
+      >
         <Image
           src={movieDetails?.poster?.url}
-          style={styles.blurredImageBackground}
-          blurRadius={80}
-          progressiveRenderingEnabled
-          resizeMode="cover"
-        />
-        <LinearGradient
-          colors={["rgba(0,0,0,1)", "rgba(0,0,0,0.3)", "rgba(0,0,0,1)"]}
-          style={styles.blurredImageBackgroundFade}
-          start={{ x: 0.5, y: 0.1 }}
-          end={{ x: 0.5, y: 0.7 }}
-        />
-        <Image
-          src={movieDetails?.poster?.url}
-          style={styles.poster}
+          style={{ width: "90%", height: "100%" }}
           resizeMode="contain"
           progressiveRenderingEnabled
           alt={
@@ -79,51 +80,70 @@ export function MovieDetailsScreen({
             `${movieDetails?.title} movieDetails? poster`
           }
         />
-        <H1 style={styles.movieTitle}>{movieDetails?.title}</H1>
-        <Text style={styles.movieSpecs}>
-          {movieDetails?.duration?.displayableText}
-          {" · "}
-          {movieDetails?.releaseYear}
-        </Text>
+      </Pressable>
 
-        <PillsContainer list={movieDetails?.genres} />
+      <LoadingIndicator isLoading={isLoading} opacity={1} />
+      <Stack.Screen
+        options={{
+          headerTransparent: true,
+          headerBlurEffect: "dark",
+          headerTitle:
+            isLoading || !movieDetails ? "Loading" : movieDetails.title,
+          headerBackButtonMenuEnabled: true,
+        }}
+      />
+      <ImageBackground
+        src={movieDetails?.poster?.url}
+        style={{ width: Dimensions.get("window").width, height: 650 }}
+      >
+        <ScrollView
+          style={{
+            backgroundColor: "transparent",
+            minHeight: Dimensions.get("window").height,
+          }}
+        >
+          <View style={{ paddingBottom: 60, backgroundColor: "transparent" }}>
+            <LinearGradient
+              colors={["rgba(0, 0, 0, 0)", "rgba(0, 0, 0, 1)"]}
+              end={{ x: 0.5, y: 0.99 }}
+              style={{ height: 500 }}
+            />
+            <View style={styles.croppedView}>
+              <H1 style={styles.movieTitle}>{movieDetails?.title}</H1>
+              <Text style={styles.movieSpecs}>
+                {movieDetails?.duration?.displayableText}
+                {" · "}
+                {movieDetails?.releaseYear}
+              </Text>
+            </View>
 
-        <PlotSection details={movieDetails} />
+            <View
+              style={{
+                backgroundColor: Colors.dark.background,
+                paddingTop: 16,
+                flexDirection: "column",
+              }}
+            >
+              <PillsContainer list={movieDetails?.genres} />
 
-        <View style={styles.croppedView}>
-          <Text style={styles.sectionTitle}>Tags</Text>
-        </View>
-        <PillsContainer list={movieDetails?.keywords} />
-      </ScrollView>
+              <PlotSection details={movieDetails} />
+
+              <View style={styles.croppedView}>
+                <Text style={styles.sectionTitle}>Tags</Text>
+              </View>
+              <PillsContainer list={movieDetails?.keywords} />
+            </View>
+          </View>
+        </ScrollView>
+      </ImageBackground>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  blurredImageBackground: {
-    height: 800,
-    width: "100%",
-    opacity: 1,
-    position: "absolute",
-    top: -100,
-  },
-  blurredImageBackgroundFade: {
-    backgroundColor: "transparent",
-    width: "100%",
-    height: 800,
-    position: "absolute",
-    top: -100,
-  },
-  poster: {
-    marginTop: 110,
-    height: 300,
-    width: "100%",
-  },
-  movieTitle: { marginVertical: 4, textAlign: "center" },
+  movieTitle: { marginVertical: 4 },
   movieSpecs: {
-    textAlign: "center",
     color: Colors.secondaryText,
-    marginBottom: 8,
   },
   croppedView: { paddingHorizontal: 16 },
   sectionTitle: { fontSize: 20, fontWeight: "600", marginBottom: 8 },

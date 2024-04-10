@@ -1,3 +1,3 @@
 import { Redirect } from "expo-router";
 
-export default () => <Redirect href="/(tabs)/watchlist" />;
+export default () => <Redirect href="/(tabs)/watchlists" />;

@@ -109,15 +109,18 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
               </Pressable>
             )}
           </View>
-          <Text>
+          <View>
             {moviesDetails.map((details, idx) => (
               <CompactMovieDetails
                 {...details}
+                isInWatchlist={watchlist?.content.some(
+                  (item) => item.movieId === details.movieId
+                )}
                 addedBy={watchlist?.content[idx].addedBy?.userName ?? ""}
                 key={idx}
               />
             ))}
-          </Text>
+          </View>
         </View>
       </View>
     </>

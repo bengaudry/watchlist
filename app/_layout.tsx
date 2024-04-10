@@ -6,8 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { User, onAuthStateChanged } from "firebase/auth";
 
-import { getCurrentUser, getFirebaseAuth } from "@/auth/firebase";
-import { Text } from "@/components/Themed";
+import { getFirebaseAuth } from "@/auth/firebase";
 
 export {
   // Catch any errors thrown by the Layout component.

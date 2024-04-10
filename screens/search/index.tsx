@@ -53,7 +53,7 @@ export function SearchScreen () {
           marginVertical: 15,
         }}
       />
-      <View style={{ width: "100%" }}>
+      <View style={{ width: "100%", paddingBottom: 100 }}>
         {isLoadingResults &&
           (!searchResults || searchResults.length === 0) &&
           Array.from({ length: 5 }).map((_, idx) => (
