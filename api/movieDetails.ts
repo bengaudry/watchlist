@@ -67,7 +67,7 @@ const processApiData = (data: any): FullMovieDetails => {
 /**
  * Fetches all movie details from imdb api and turns it into usable data
  */
-export async function fetchMovieDetailss(
+export async function fetchMovieDetails(
   movieid: string
 ): Promise<FullMovieDetails> {
   if (!process.env.EXPO_PUBLIC_RAPID_API_KEY)
@@ -101,7 +101,7 @@ export async function fetchMovieDetailss(
 // TEST VERSION OF FETCH MOVIE DETAILS
 // DO NOT PUSH IN PROD !
 
-export async function fetchMovieDetails(movieid: string): Promise<FullMovieDetails> {
+export async function fetchMovieDetailss(movieid: string): Promise<FullMovieDetails> {
   return {
     movieId: "tt1160419",
     productionStatus: "Released",

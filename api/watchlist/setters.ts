@@ -1,6 +1,9 @@
 import { getFirebaseDatabase } from "@/auth/firebase";
-import { addDoc, collection, doc, getDoc, setDoc } from "firebase/firestore";
-import { GLOBAL_WATCHLIST_DB_NAME } from "../userWatchlist";
+import { addDoc, arrayUnion, collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import {
+  GLOBAL_WATCHLIST_DB_NAME,
+  WatchlistContentBase,
+} from "../userWatchlist";
 
 export async function initializeUserGlobalWatchlist(
   uid: string
@@ -31,4 +34,14 @@ export async function createWatchlist(
     guests: [],
     ...watchlist,
   });
+}
+
+export async function addToWatchlist(
+  listId: string,
+  movie: WatchlistContentBase
+) {  
+  updateDoc(
+    doc(getFirebaseDatabase(), "watchlists", listId),
+    { content: arrayUnion(movie) },
+  );
 }

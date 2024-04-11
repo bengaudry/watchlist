@@ -1,4 +1,4 @@
-type WatchlistContentBase = {
+export type WatchlistContentBase = {
   movieId: string;
   posterUrl?: string;
   addedBy?: { userName: string; uid: string };

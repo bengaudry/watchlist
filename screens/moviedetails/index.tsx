@@ -16,6 +16,9 @@ import { Separator } from "@/components/Separator";
 import { LinearGradient } from "expo-linear-gradient";
 import { PillsContainer } from "@/components/custom/Pills/PillsContainer";
 import { LoadingIndicator } from "@/components/custom/LoadingView";
+import { Cta } from "@/components/buttons/Cta";
+import { addToWatchlist } from "@/api/userWatchlist";
+import { getCurrentUser } from "@/auth/firebase";
 
 const PlotSection = ({ details }: { details?: FullMovieDetails }) =>
   details ? (
@@ -124,6 +127,23 @@ export function MovieDetailsScreen({
                 flexDirection: "column",
               }}
             >
+              <Cta
+                icon="add-outline"
+                label="Watchlist"
+                style={{ marginHorizontal: 16, marginBottom: 12 }}
+                onPress={() => {
+                  const user = getCurrentUser();
+                  if (!user) return;
+                  addToWatchlist("Cf0PdIPBUSRNcQaa95S9", {
+                    movieId: movieDetails?.movieId as string,
+                    addedBy: {
+                      userName: user.displayName as string,
+                      uid: user.uid,
+                    },
+                    posterUrl: movieDetails?.poster?.url,
+                  });
+                }}
+              />
               <PillsContainer list={movieDetails?.genres} />
 
               <PlotSection details={movieDetails} />

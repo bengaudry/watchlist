@@ -61,7 +61,7 @@ export function CompactMovieDetails({
   isInWatchlist?: boolean;
   onToggleFromWatchlist?: () => void;
   isSkeleton?: boolean;
-  addedBy?: Array<{ userName: string; uid: string }>;
+  addedBy?: { userName: string; uid: string };
 }) {
   const { push } = useRouter();
 
@@ -83,15 +83,8 @@ export function CompactMovieDetails({
 
           <View style={{ flexDirection: "row", alignItems: "center", gap: 5 }}>
             <Text style={styles.subtext}>Added by</Text>
-            {addedBy && addedBy.length > 0 ? (
-              addedBy
-                .slice(0, 2)
-                .map(
-                  ({ userName, uid }) =>
-                    uid !== getCurrentUser()?.uid && (
-                      <Text style={styles.subtext}>{userName}</Text>
-                    )
-                )
+            {addedBy && addedBy.userName !== "" ? (
+              <Text style={styles.subtext}>{addedBy.userName}</Text>
             ) : (
               <Text style={styles.subtext}>you</Text>
             )}

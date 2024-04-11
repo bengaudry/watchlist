@@ -116,7 +116,7 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
                 isInWatchlist={watchlist?.content.some(
                   (item) => item.movieId === details.movieId
                 )}
-                addedBy={watchlist?.content[idx].addedBy?.userName ?? ""}
+                addedBy={watchlist?.content[idx].addedBy}
                 key={idx}
               />
             ))}
