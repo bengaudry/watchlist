@@ -16,6 +16,7 @@
       "**/*"
     ],
     "ios": {
+      "bundleIdentifier": "com.watchlist.watchlist",
       "supportsTablet": true
     },
     "android": {

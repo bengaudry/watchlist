@@ -85,10 +85,14 @@ export function WatchlistScreen() {
       "Choose a name for this watchlist",
       (txt) => {
         const uid = getCurrentUser()?.uid;
-        if (uid) {
+        if (uid && txt.length > 2) {
           createWatchlist(uid, { name: txt }).then(getWatchlists);
         }
-      }
+      },
+      "plain-text",
+      "",
+      "",
+      { userInterfaceStyle: "dark" }
     );
 
   const joinCollaborativeList = () =>
@@ -98,66 +102,75 @@ export function WatchlistScreen() {
       (txt) => txt
     );
 
-  return (
-    <ScreenContainer>
-      <RefreshControl refreshing={isRefreshing} onRefresh={getWatchlists} />
-      <H1 style={{ marginBottom: 25 }}>My watchlists</H1>
-
-      <Pressable onPress={() => navigate(`/watchlistcontent/global`)}>
-        <View style={styles.watchlistContainer}>
-          <View style={styles.watchlistHeader}>
-            <Text style={styles.watchlistName}>All</Text>
-            <Link href={`/watchlistcontent/global`}>
-              <Text style={{ color: Colors.secondaryText }}>See all</Text>
-            </Link>
-          </View>
-          <PostersScrollView
-            list={globalWatchlist?.content}
-            navigate={navigate}
-          />
+  const GlobalWatchlistButton = () => (
+    <Pressable onPress={() => navigate(`/watchlistcontent/global`)}>
+      <View style={styles.watchlistContainer}>
+        <View style={styles.watchlistHeader}>
+          <Text style={styles.watchlistName}>Saved</Text>
+          <Link href={`/watchlistcontent/global`}>
+            <Text style={{ color: Colors.secondaryText }}>See all</Text>
+          </Link>
         </View>
-      </Pressable>
-
-      <View style={{ flexDirection: "row", gap: 12 }}>
-        <Cta
-          onPress={joinCollaborativeList}
-          icon="link-outline"
-          style={{ flex: 1 }}
-          importance="secondary"
-          label="Join watchlist"
-        />
-        <Cta
-          onPress={createNewList}
-          icon="add-outline"
-          style={{ flex: 1 }}
-          label="Create watchlist"
+        <PostersScrollView
+          list={globalWatchlist?.content}
+          navigate={navigate}
         />
       </View>
+    </Pressable>
+  );
 
-      {watchlists && watchlists.length > 0 ? (
-        watchlists.map((list, idx) => (
-          <Pressable
-            onPress={() => navigate(`/watchlistcontent/${list.id}`)}
-            key={idx}
-          >
-            <View style={styles.watchlistContainer}>
-              <View style={styles.watchlistHeader}>
-                <Text style={styles.watchlistName}>{list.name}</Text>
-                <Link href={`/watchlistcontent/${list.id}`}>
-                  <Text style={{ color: Colors.secondaryText }}>See all</Text>
-                </Link>
-              </View>
-              <PostersScrollView list={list.content} navigate={navigate} />
-            </View>
-          </Pressable>
-        ))
-      ) : (
-        <Text>No movies saved or watchlists created yet</Text>
-      )}
+  return (
+    <ScreenContainer>
+      <ScrollView style={{ paddingBottom: 150 }}>
+        <RefreshControl refreshing={isRefreshing} onRefresh={getWatchlists} />
+        <H1 style={{ marginBottom: 25 }}>My watchlists</H1>
+
+        <GlobalWatchlistButton />
+
+        <View style={{ flexDirection: "row", gap: 12 }}>
+          <Cta
+            onPress={joinCollaborativeList}
+            icon="link-outline"
+            style={{ flex: 1 }}
+            importance="secondary"
+            label="Join watchlist"
+          />
+          <Cta
+            onPress={createNewList}
+            icon="add-outline"
+            style={{ flex: 1 }}
+            label="Create watchlist"
+          />
+        </View>
+
+        {watchlists && watchlists.length > 0 ? (
+          watchlists
+            .sort((l1, l2) => l2.content.length - l1.content.length)
+            .map((list, idx) => (
+              <Pressable
+                onPress={() => navigate(`/watchlistcontent/${list.id}`)}
+                key={idx}
+              >
+                <View style={styles.watchlistContainer}>
+                  <View style={styles.watchlistHeader}>
+                    <Text style={styles.watchlistName}>{list.name}</Text>
+                    <Link href={`/watchlistcontent/${list.id}`}>
+                      <Text style={{ color: Colors.secondaryText }}>
+                        See all
+                      </Text>
+                    </Link>
+                  </View>
+                  <PostersScrollView list={list.content} navigate={navigate} />
+                </View>
+              </Pressable>
+            ))
+        ) : (
+          <Text>No movies saved or watchlists created yet</Text>
+        )}
+      </ScrollView>
     </ScreenContainer>
   );
 }
-
 const styles = StyleSheet.create({
   watchlistContainer: {
     width: "100%",

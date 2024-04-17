@@ -3,7 +3,6 @@ import { View, Text } from "../Themed";
 import Colors from "@/constants/Colors";
 import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import { getCurrentUser } from "@/auth/firebase";
 
 export type CompactMovieDetailsProps = {
   title?: string;
@@ -29,7 +28,7 @@ function AddToWatchlistBtn({
     <Pressable
       onPress={() => onChange && onChange()}
       style={{
-        backgroundColor: isInWatchlist ? "gray" : "yellow",
+        backgroundColor: isInWatchlist ? "gray" : Colors.accent,
         borderRadius: 9999,
         width: 35,
         aspectRatio: "1/1",

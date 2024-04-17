@@ -17,7 +17,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { PillsContainer } from "@/components/custom/Pills/PillsContainer";
 import { LoadingIndicator } from "@/components/custom/LoadingView";
 import { Cta } from "@/components/buttons/Cta";
-import { addToWatchlist } from "@/api/userWatchlist";
+import { addToWatchlist, askChooseWatchlist } from "@/api/userWatchlist";
 import { getCurrentUser } from "@/auth/firebase";
 
 const PlotSection = ({ details }: { details?: FullMovieDetails }) =>
@@ -134,13 +134,18 @@ export function MovieDetailsScreen({
                 onPress={() => {
                   const user = getCurrentUser();
                   if (!user) return;
-                  addToWatchlist("Cf0PdIPBUSRNcQaa95S9", {
-                    movieId: movieDetails?.movieId as string,
-                    addedBy: {
-                      userName: user.displayName as string,
-                      uid: user.uid,
-                    },
-                    posterUrl: movieDetails?.poster?.url,
+                  // Asks to the user to choose a specific list (with popup)
+                  askChooseWatchlist(user.uid).then((listId) => {
+                    console.log("listid : ", listId)
+                    if (!listId) return;
+                    addToWatchlist(user.uid, listId, {
+                      movieId: movieDetails?.movieId as string,
+                      addedBy: {
+                        userName: user.displayName as string,
+                        uid: user.uid,
+                      },
+                      posterUrl: movieDetails?.poster?.url,
+                    });
                   });
                 }}
               />

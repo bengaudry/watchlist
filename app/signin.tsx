@@ -65,7 +65,7 @@ export default function SignIn() {
           }}
         >
           Don't have an account ?{" "}
-          <Link href="/register" replace style={{ color: "yellow" }}>
+          <Link href="/register" replace style={{ color: Colors.accent }}>
             Register
           </Link>
         </Text>

@@ -3,6 +3,7 @@ import { ReactNode } from "react";
 import { Pressable, PressableProps } from "react-native";
 
 import { Text } from "../Themed";
+import Colors from "@/constants/Colors";
 
 export function Cta(
   props: PressableProps & {
@@ -22,7 +23,7 @@ export function Cta(
       style={[
         {
           width: fullWidth ? "100%" : "auto",
-          backgroundColor: isPrimary() ? "yellow" : "rgba(70, 70 ,70, 1)",
+          backgroundColor: isPrimary() ? Colors.accent : "rgba(70, 70 ,70, 1)",
           paddingHorizontal: 16,
           paddingVertical: 8,
           borderRadius: 9999,

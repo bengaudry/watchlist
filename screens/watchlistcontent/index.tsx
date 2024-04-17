@@ -1,6 +1,6 @@
 import { Stack } from "expo-router";
 import { useEffect, useState } from "react";
-import { Pressable } from "react-native";
+import { ActionSheetIOS, Alert, Pressable, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import {
@@ -75,6 +75,38 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
       <Stack.Screen
         options={{
           title: isLoading || !watchlist ? "Loading" : watchlist?.name,
+          headerRight: (props) =>
+            id !== "global" && (
+              <>
+                <Pressable
+                  onPress={() => {
+                    ActionSheetIOS.showActionSheetWithOptions(
+                      {
+                        options: [
+                          "Share watchlist",
+                          "Delete watchlist",
+                          "Cancel",
+                        ],
+                        cancelButtonIndex: 2,
+                        destructiveButtonIndex: 1,
+                      },
+                      (btnIndex) => {
+                        if (btnIndex === 0) setSettingsModalOpened(true);
+                        if (btnIndex === 1) {
+                          /* TODO : delete watchlist */
+                        }
+                      }
+                    );
+                  }}
+                >
+                  <Ionicons
+                    name="settings-outline"
+                    size={28}
+                    color={Colors.secondaryText}
+                  />
+                </Pressable>
+              </>
+            ),
         }}
       />
       <LoadingIndicator isLoading={isLoading} />
@@ -87,28 +119,11 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
           guests={watchlist?.guests}
         />
       )}
-      <View>
+      <ScrollView>
         <View style={{ paddingHorizontal: 16, paddingVertical: 32 }}>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <H1 style={{ textTransform: "capitalize", marginBottom: 15 }}>
-              {watchlist?.name}
-            </H1>
-            {id !== "global" && (
-              <Pressable onPress={() => setSettingsModalOpened(true)}>
-                <Ionicons
-                  name="share-outline"
-                  size={28}
-                  color={Colors.secondaryText}
-                />
-              </Pressable>
-            )}
-          </View>
+          <H1 style={{ textTransform: "capitalize", marginBottom: 15, fontSize: 24 }}>
+            {watchlist?.name}
+          </H1>
           <View>
             {moviesDetails.map((details, idx) => (
               <CompactMovieDetails
@@ -122,7 +137,7 @@ export function WatchlistContentScreen({ id }: { id: string | string[] }) {
             ))}
           </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 }
